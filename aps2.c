@@ -22,6 +22,7 @@ int main() {
     char s1[] = "(a+)";
 
     if (E(&f,s)) printf("Yiiipee");
+    else printf("whompwhomp");
 
     return 0;
 }
