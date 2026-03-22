@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-
 typedef struct no{
     char l;
     struct no* nxt;
@@ -21,12 +18,3 @@ int dequeue(fila** f);
 char last(fila* f);
 int taVazia(fila* f);
 void mostrarDerivacao(fila* f);
-
-
-int main() {
-
-    return 0;
-}
-
-
-
