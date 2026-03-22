@@ -18,10 +18,12 @@ int main() {
     f.fim = NULL;
     f.in = NULL;
 
-    char s[] = "(a+a)";
+    char s[] = "(a*(a+a))";
     char s1[] = "(a+)";
 
-    if (E(&f,s)) printf("Yiiipee");
+    char* p = s;
+
+    if (E(&f, &p)) printf("Yiiipee");
     else printf("whompwhomp");
 
     return 0;

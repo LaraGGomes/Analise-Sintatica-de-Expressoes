@@ -94,34 +94,37 @@ int taVazia(fila f) {
     Funções da gramática
 */
 
-int E(fila *f,char *p);
-int Op(fila* f, char *p);
+int E(fila *f,char **p);
+int Op(fila* f, char **p);
 
-int E(fila *f,char *p) {
-    if (*p == 'a') {
-        p++;
+int E(fila *f,char **p) {
+
+    if (**p == 'a') {
+        ++(*p);
         return 1;
     }
 
-    else if (*p == '(') {
-        p++;
+    if (**p == '(') {
+        *p = (*p)+1;
         if (!E(f, p)) return 0;
 
         if (!Op(f, p)) return 0;
 
         if (!E(f, p)) return 0;
 
-        if(*p == ')') return 1;
+        if(**p == ')') {
+            ++(*p);
+            return 1;
+        }
     }
 
-    else return 0;
+    return 0;
 }
 
-int Op(fila* f, char *p) {
+int Op(fila* f, char **p) {
 
-    // fazendo só os checks simples
-    if (*p == '+' || *p == '*' || *p == '/' || *p == '-') {
-        p++;
+    if (**p == '+' || **p == '*' || **p == '/' || **p == '-') {
+        ++(*p);
         return 1;
     }
 
