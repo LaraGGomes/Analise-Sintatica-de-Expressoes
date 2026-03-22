@@ -95,8 +95,31 @@ int taVazia(fila f) {
 */
 
 int E(fila *f,char *p);
-int Op(char *p);
+int Op(fila* f, char *p);
 
 int E(fila *f,char *p) {
-    
+    if (*p == 'a' || *p == ')') {
+        return 1;
+    }
+
+    if (*p == '(') {
+        if (!E(f, p+1)) return 0;
+
+        if (!Op(f, p+2)) return 0;
+
+        if (!E(f, p+3)) return 0;
+
+    }
+
+    return 0;   // não deu match 
+}
+
+int Op(fila* f, char *p) {
+
+    // fazendo só os checks simples
+    if (*p == '+' || *p == '*' || *p == '/' || *p == '-') {
+        return 1;
+    }
+
+    return 0;
 }
