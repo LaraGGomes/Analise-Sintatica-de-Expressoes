@@ -1,15 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-
-typedef struct no{
-    char l;
-    struct no* nxt;
-} no;
-typedef struct fila{
-    no* c;
-    no* f;
-
-} fila;
+#include "aps2.h"
 
 /*
     Funções básicas para no e fila
