@@ -1,15 +1,15 @@
 #include "aps2.h"
 
 /*
-    Funções básicas para no e fila
+    Protótipos das funções
 */
 
-no* criarNo(char letra);
-int enqueue(fila* f, char letra);
+no* criarNo(char *expressao);
+int enqueue(fila* f, char *expressao);
 int dequeue(fila* f);
-char last(fila f);
+char * last(fila f);
 int taVazia(fila f);
-void mostrarDerivacao(fila f);
+void mostrarDerivacao(fila *f);
 
 
 int main() {
@@ -19,12 +19,18 @@ int main() {
     f.in = NULL;
 
     char s[] = "(a*(a+a))";
-    char s1[] = "(a+)";
+    char s1[] = "(a+a)";
 
-    char* p = s;
+    char* p = s1;
 
-    if (E(&f, &p)) printf("Yiiipee");
-    else printf("whompwhomp");
+    if (E(&f, &p)) printf("Yiiipee\n");
+    else printf("whompwhomp\n");
+
+    // mostrarDerivacao(&f);
+    // destruirFila(&f);
+    // mostrarDerivacao(&f);
+    derivacao(&f);
+    destruirFila(&f);
 
     return 0;
 }
