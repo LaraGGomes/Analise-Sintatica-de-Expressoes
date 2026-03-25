@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct no{
-    char l;
+    char *exp;
     struct no* prox;
 } no;
 typedef struct fila{
@@ -15,14 +16,26 @@ typedef struct fila{
     Funções básicas para no e fila
 */
 
-no* criarNo(char letra);
-int enqueue(fila* f, char letra);
+no* criarNo(char *expressao);
+int enqueue(fila* f, char *expressao);
 int dequeue(fila* f);
-char last(fila f);
+char * first(fila f);
 int taVazia(fila f);
-void mostrarDerivacao(fila f);
+void mostrarFila(no *f);
+void destruirFila(fila *f);
 
-no* criarNo(char letra) {
+/*
+    Funções da gramática
+*/
+
+int E(fila *f,char **p);
+int Op(fila* f, char **p);
+void mostrarDerivacao (char *s, fila *f);
+
+// variável global de expressão pra facilitar inserção
+char E2[] = "(E Op E)";
+
+no* criarNo(char *expressao) {
     no *novo;
     novo = (no*)malloc(sizeof(no));
     if (!novo) {
@@ -30,13 +43,13 @@ no* criarNo(char letra) {
         return NULL;
     }
 
-    novo->l = letra;
+    novo->exp = expressao;
     novo->prox = NULL;
     return novo;
 }
 
-int enqueue(fila *f, char letra) {
-    no* novo = criarNo(letra);
+int enqueue(fila *f, char *expressao) {
+    no* novo = criarNo(expressao);
 
     if (!novo) return 0;
 
@@ -75,14 +88,13 @@ int dequeue(fila *f) {
     return 1;
 }
 
-char last(fila f) {
+char * first(fila f) {
     // fila vazia
     if (taVazia(f)) {
-        printf("Nao tem elemento a ser mostrado\n");
-        return '#';
+        return "#";
     }
 
-    return f.fim->l;
+    return f.in->exp;
 }
 
 int taVazia(fila f) {
@@ -90,21 +102,35 @@ int taVazia(fila f) {
     return 0;
 }
 
-/*
-    Funções da gramática
-*/
+void mostrarFila(no *f) {
+    if (!f) return;
 
-int E(fila *f,char **p);
-int Op(fila* f, char **p);
+    printf("%s, ", f->exp);
+
+    mostrarFila(f->prox);
+}
+
+void destruirFila(fila *f) {
+    if (taVazia(*f)) return;
+    while (!taVazia(*f)) {
+        dequeue(f);
+    }
+}
 
 int E(fila *f,char **p) {
 
     if (**p == 'a') {
+        // colocar expressão na fila
+        if (!enqueue(f, "a")) return 0; // se n der pra inserir fudeu
+
+        // próximo caractere
         ++(*p);
         return 1;
     }
 
     if (**p == '(') {
+        if (!enqueue(f, E2)) return 0;
+
         *p = (*p)+1;
         if (!E(f, p)) return 0;
 
@@ -124,9 +150,90 @@ int E(fila *f,char **p) {
 int Op(fila* f, char **p) {
 
     if (**p == '+' || **p == '*' || **p == '/' || **p == '-') {
+        if (**p == '+') {
+            if (!enqueue(f, "+")) return 0;
+        }
+
+        if (**p == '*') {
+            if (!enqueue(f, "*")) return 0;
+        }
+        if (**p == '/') {
+            if (!enqueue(f, "/")) return 0;
+        }
+        if (**p == '-') {
+            if (!enqueue(f, "-")) return 0;
+        }
+
         ++(*p);
         return 1;
     }
 
     return 0;
+}
+
+void mostrarDerivacao (char *s, fila *f) {
+    int i, flag, aux, tam = strlen(s);
+    char saida[3*tam];          // tamanho da entrada multiplicado (considerando espaços e Op's)
+
+    printf("\nDerivação:\nE -> ");
+
+    strcpy(saida, first(*f));   // a saida é inicialmente o primeiro valor inserido na fila
+
+    while (!taVazia(*f)) {
+        flag = 0;               // vai ser 1 se ainda houverem símbolos não-terminais na string
+        char str[3*tam];        // string auxiliar
+        strcpy(str, saida);
+
+        // checagem de símbolos não-terminais
+        for (i = 0; saida[i] != '\0'; i++) {
+            if (saida[i] == 'E') {
+                flag = 1;
+                break;
+            }
+            if (saida[i] == 'O') {
+                flag = 2;       // diferente por causa do caractere a mais (p)
+                break;
+            }
+        }
+
+        // se tem flag, ainda precisa de derivação
+        if (flag) {
+            
+            // se a saida for igual ao primeiro da fila, significa que estamos na primeira iteração do loop
+            if (!strcmp(saida, first(*f))) {
+                dequeue(f);                     // tem que retirar o primeiro da fila para acessar o que vai ser inserido 
+                printf("%s -> ", saida);        // e printar a primeira derivação
+            }
+            aux = i+1;                          // auxiliar guarda posição em que foi encontrada a variável +1 (espaço em branco de onde vamos voltar a imprimir a string, pulando a variável)
+
+            char *prox = first(*f);             // próxima derivação, que vai ser inserida
+
+            // inserindo a derivação da string
+            for (int j = 0; prox[j] != '\0'; j++) {
+                saida[i] = prox[j];
+                i++;
+            }
+
+            if (flag == 2) aux++;               // flag = 2 é Op, o que significa que temos que pular uma posição a mais
+
+            // reinserindo o restante da string pós variável
+            for (int j = aux; str[j] != '\0'; j++) {
+                saida[i] = str[j];
+                i++;
+            }
+
+            // eliminando caractere extra no final da string saida resultado do pulo de Op
+            if (flag == 2) saida[i] = '\0';
+
+            dequeue(f);                         // próximo elemento da fila
+
+            // se não houver elemento no topo (fila vazia), a saida atual é a final e a derivação vai acabar na próxima iteração
+            if (strcmp(first(*f), "#"))
+                printf("%s -> ", saida);       // se não, imprime a saida com a setinha e segue a derivação
+        }
+
+        // string só está composta por símbolos terminais, pode acabar
+        else break;
+    }
+    printf("%s", saida);
 }
