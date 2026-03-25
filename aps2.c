@@ -7,10 +7,14 @@
 no* criarNo(char *expressao);
 int enqueue(fila* f, char *expressao);
 int dequeue(fila* f);
-char * last(fila f);
+char * first(fila f);
 int taVazia(fila f);
-void mostrarDerivacao(fila *f);
+void mostrarFila(no *f);
+void destruirFila(fila *f);
 
+int E(fila *f,char **p);
+int Op(fila* f, char **p);
+void mostrarDerivacao (char *s, fila *f);
 
 int main() {
 
@@ -18,22 +22,18 @@ int main() {
     f.fim = NULL;
     f.in = NULL;
 
-    char s[] = "(a*(a+a))"; // depois fazer o tratamento de espaço com strip
+    char s[] = "((a+a)*a)"; // depois fazer o tratamento de espaço com strip
     char s1[] = "(a+a)";
+    char s2[] = "a";
 
-    char* p = s;
+    char* p = s2;
 
     if (E(&f, &p)) printf("Yiiipee\n");
     else printf("whompwhomp\n");
 
-    // mostrarDerivacao(&f);
-    // destruirFila(&f);
-    // mostrarDerivacao(&f);
-    derivacao(&f);
+    mostrarFila(f.in);
+    mostrarDerivacao(s, &f);
     destruirFila(&f);
 
     return 0;
 }
-
-
-
