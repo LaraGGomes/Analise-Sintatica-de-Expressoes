@@ -79,7 +79,7 @@ int dequeue(fila *f) {
 char * first(fila f) {
     // fila vazia
     if (taVazia(f)) {
-        printf("Nao tem elemento a ser mostrado\n");
+        //printf("Nao tem elemento a ser mostrado\n");
         return "#";
     }
 
@@ -113,50 +113,56 @@ void mostrarDerivacao(fila *f) {
 }
 
 void derivacao (fila *f) {
-    int i = 0, flag, aux;
+    int i, flag, aux;
     char final[200];    //mudar pra alocação dinamica dps
     printf("\nDerivação:\nE -> ");
 
     strcpy(final, first(*f));
-    while (f->in != f->fim) {
+    while (!taVazia(*f)) {
         flag = 0;
-        char *str = first(*f);
+        char str[200];
+        strcpy(str, final);
 
-        for (int j = 0; str[j] != '\0'; j++) {
-            if (final[j] == 'E') {
+        for (i = 0; final[i] != '\0'; i++) {
+            if (final[i] == 'E') {
                 flag = 1;
-                i++;
-                aux = j;
                 break;
             }
-            if (final[j] == 'O') {
-                flag = 1;
-                i+= 2;
-                aux = j;
+            if (final[i] == 'O') {
+                flag = 2;
                 break;
             }
         }
+
         // socorro
         if (flag) {
-            dequeue(f);
-            char *prox = first(*f);
+            
+            if (!strcmp(final, first(*f))) {
+                dequeue(f);
+                printf("%s -> ", final);
+            }
+            aux = i+1;
 
-            printf("%s -> ", str);
-            //printf("%s -> ", prox);
+            char *prox = first(*f);
 
             for (int j = 0; prox[j] != '\0'; j++) {
                 final[i] = prox[j];
                 i++;
             }
 
-            for (++aux; str[aux] != '\0'; aux++) {
-                final[i] = str[aux];
+            if (flag == 2) aux++;
+
+            for (int j = aux; str[j] != '\0'; j++) {
+                final[i] = str[j];
                 i++;
             }
 
-            printf("%s -> ", final);
+            if (flag == 2) final[i] = '\0';
 
             dequeue(f);
+
+            if (!strcmp(first(*f), "#")) printf("%s", final);
+            else printf("%s -> ", final);
         }
 
         else break;

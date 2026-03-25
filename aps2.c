@@ -18,10 +18,10 @@ int main() {
     f.fim = NULL;
     f.in = NULL;
 
-    char s[] = "(a*(a+a))";
+    char s[] = "(a*(a+a))"; // depois fazer o tratamento de espaço com strip
     char s1[] = "(a+a)";
 
-    char* p = s1;
+    char* p = s;
 
     if (E(&f, &p)) printf("Yiiipee\n");
     else printf("whompwhomp\n");
