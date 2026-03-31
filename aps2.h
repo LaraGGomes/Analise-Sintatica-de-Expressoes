@@ -30,7 +30,7 @@ void destruirFila(fila *f);
 
 int E(fila *f,char **p);
 int Op(fila* f, char **p);
-void mostrarDerivacao (char *s, fila *f);
+void mostrarDerivacao (int tam, fila *f);
 
 // variável global de expressão pra facilitar inserção
 char E2[] = "(E Op E)";
@@ -171,11 +171,11 @@ int Op(fila* f, char **p) {
     return 0;
 }
 
-void mostrarDerivacao (char *s, fila *f) {
-    int i, flag, aux, tam = strlen(s);
+void mostrarDerivacao (int tam, fila *f) {
+    int i, flag, aux;
     char saida[3*tam];          // tamanho da entrada multiplicado (considerando espaços e Op's)
 
-    printf("\nDerivação:\nE -> ");
+    printf("\nDerivacao:\nE -> ");
 
     strcpy(saida, first(*f));   // a saida é inicialmente o primeiro valor inserido na fila
 
@@ -236,4 +236,18 @@ void mostrarDerivacao (char *s, fila *f) {
         else break;
     }
     printf("%s", saida);
+}
+
+void strip(char* s, int tam) {
+    for (int i = 0; i < tam; i++) {
+        if (s[i] == ' ') {
+            for (int j = i; j < tam; j++) {
+                s[j] = s[j+1];
+            }
+            
+            tam--;
+        }
+    }
+    
+    s[tam-1] = '\0';
 }

@@ -14,7 +14,7 @@ void destruirFila(fila *f);
 
 int E(fila *f,char **p);
 int Op(fila* f, char **p);
-void mostrarDerivacao (char *s, fila *f);
+void mostrarDerivacao (int tam, fila *f);
 
 int main() {
 
@@ -22,17 +22,26 @@ int main() {
     f.fim = NULL;
     f.in = NULL;
 
-    char s[] = "((a+a)*a)"; // depois fazer o tratamento de espaço com strip
-    char s1[] = "(a+a)";
-    char s2[] = "a";
+    char *cadeia;
+    int tam;
 
-    char* p = s2;
+    printf("Insira a cadeia a ser analisada: ");
+    fgets(cadeia, 50, stdin);
 
-    if (E(&f, &p)) printf("Yiiipee\n");
-    else printf("whompwhomp\n");
+    strip(cadeia, strlen(cadeia));
 
-    mostrarFila(f.in);
-    mostrarDerivacao(s, &f);
+    tam = strlen(cadeia);
+
+    char *p = cadeia;
+
+    if (E(&f, &p) && p == &cadeia[tam]) {
+        printf("Cadeia validada, segue a sua derivacao mais a esquerda.\n");
+        mostrarDerivacao(tam, &f);
+
+    }
+
+    else printf("Cadeia invalida para essa gramatica.\n");
+
     destruirFila(&f);
 
     return 0;
