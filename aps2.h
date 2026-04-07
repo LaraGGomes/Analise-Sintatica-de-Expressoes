@@ -32,6 +32,8 @@ int E(fila *f,char **p);
 int Op(fila* f, char **p);
 void mostrarDerivacao (int tam, fila *f);
 
+void strip(char* s, int tam);
+
 // variável global de expressão pra facilitar inserção
 char E2[] = "(E Op E)";
 
@@ -121,7 +123,7 @@ int E(fila *f,char **p) {
 
     if (**p == 'a') {
         // colocar expressão na fila
-        if (!enqueue(f, "a")) return 0; // se n der pra inserir fudeu
+        if (!enqueue(f, "a")) return 0;
 
         // próximo caractere
         ++(*p);
@@ -247,6 +249,7 @@ void strip(char* s, int tam) {
             
             tam--;
         }
+        if (s[i] == ' ') i--;
     }
     
     s[tam-1] = '\0';

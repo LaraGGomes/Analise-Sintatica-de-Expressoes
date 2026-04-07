@@ -16,6 +16,8 @@ int E(fila *f,char **p);
 int Op(fila* f, char **p);
 void mostrarDerivacao (int tam, fila *f);
 
+void strip(char* s, int tam);
+
 int main() {
 
     fila f;
@@ -36,8 +38,8 @@ int main() {
 
     if (E(&f, &p) && p == &cadeia[tam]) {
         printf("Cadeia validada, segue a sua derivacao mais a esquerda.\n");
-        mostrarDerivacao(tam, &f);
 
+        mostrarDerivacao(tam, &f);
     }
 
     else printf("Cadeia invalida para essa gramatica.\n");
