@@ -230,7 +230,7 @@ void mostrarDerivacao (int tam, fila *f) {
             dequeue(f);                         // próximo elemento da fila
 
             // se não houver elemento no topo (fila vazia), a saida atual é a final e a derivação vai acabar na próxima iteração
-            if (strcmp(first(*f), "#"))
+            if (!taVazia(*f))
                 printf("%s -> ", saida);       // se não, imprime a saida com a setinha e segue a derivação
         }
 
